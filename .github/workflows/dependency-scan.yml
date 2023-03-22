@@ -20,5 +20,4 @@ jobs:
         uses: veracode/veracode-sca@v2.0.64
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-#           quick: true
-#           create-issues: true 
+          create-issues: true 
