@@ -1,4 +1,4 @@
-name: Pipeline and Issue Generation
+name: Package, Pipeline Scan and Issue Generation
 
 on:
   push:
