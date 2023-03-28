@@ -67,4 +67,4 @@ jobs:
         uses: veracode/veracode-flaws-to-issues@v2.1.0
         with:
           scan-results-json: 'filtered_results.json'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+#           github-token: ${{ secrets.GITHUB_TOKEN }}
