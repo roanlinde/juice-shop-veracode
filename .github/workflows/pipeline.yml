@@ -15,10 +15,10 @@ jobs:
   # This workflow contains a job to build and submit pipeline scan, you will need to customize the build process accordingly and make sure the artifact you build is used as the file input to the pipeline scan file parameter
   build-and-pipeline-scan:
     # The type of runner that the job will run on
-    permissions:
-      contents: read # for actions/checkout to fetch code
-      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
-      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status 
+#     permissions:
+#       contents: read # for actions/checkout to fetch code
+#       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+#       actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status 
     runs-on: ubuntu-latest
     steps:
 
@@ -30,15 +30,24 @@ jobs:
     - run: zip -r veracode-scan-target.zip ./
 
     # download the Veracode Static Analysis Pipeline scan jar
-    - run: curl --silent --show-error --fail -O https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
-    - run: unzip -o pipeline-scan-LATEST.zip
+#     - run: curl --silent --show-error --fail -O https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
+#     - run: unzip -o pipeline-scan-LATEST.zip
 
-    - uses: actions/setup-java@v3
+#     - uses: actions/setup-java@v3
+#       with:
+#         java-version: 8
+#         distribution: 'temurin'
+#     - run: java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VID}}" --veracode_api_key "${{secrets.VKEY}}" --file veracode-scan-target.zip
+#       continue-on-error: true
+    - name: pipeline-scan action step
+      id: pipeline-scan
+      uses: veracode/Veracode-pipeline-scan-action@v1.0.3
       with:
-        java-version: 8
-        distribution: 'temurin'
-    - run: java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VID}}" --veracode_api_key "${{secrets.VKEY}}" --file veracode-scan-target.zip
-      continue-on-error: true
+        vid: ${{ secrets.VID }}
+        vkey: ${{ secrets.VKEY }}
+        file: "veracode-scan-target.zip" 
+        fail_build: false
+        filtered_json_output_file: "filtered_results.json"
 
     - name: save filtered results file
       uses: actions/upload-artifact@v2
