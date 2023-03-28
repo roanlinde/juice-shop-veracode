@@ -1,0 +1,25 @@
+name: Package and Policy Scan
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "main" ]
+
+jobs:
+  build-and-upload-to-vera:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: zip -r veracode-scan-target.zip ./
+    - name: Veracode Upload And Scan
+        uses: veracode/veracode-uploadandscan-action@0.2.4
+        with:
+          appname: 'juiceshop'
+          createprofile: false
+          filepath: 'veracode-scan-target.zip'
+          vid: '${{ secrets.VID }}'
+          vkey: '${{ secrets.VKEY }}'
+          createsandbox: 'true'
+          sandboxname: 'github-test'
